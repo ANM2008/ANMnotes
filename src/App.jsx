@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './sub_pages/home';
 import ChemistryResourcesPage from './sub_pages/chem.jsx';
 import PhysicsResourcesPage from './sub_pages/phy.jsx';
@@ -13,7 +13,7 @@ function App() {
         <Route path="/chemistry" element={<ChemistryResourcesPage/>} />
         <Route path="/physics" element={<PhysicsResourcesPage/>} />
         <Route path="/mathematics" element={<MathsResourcesPage/>} />
-        <Route path="/ANMnotes" element={<Notes />} /> 
+        {/* <Route path="/ANMnotes" element={<Notes />} />  */}
       </Routes>
     </Router>
   );
