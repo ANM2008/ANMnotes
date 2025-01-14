@@ -13,6 +13,7 @@ function App() {
         <Route path="/chemistry" element={<ChemistryResourcesPage/>} />
         <Route path="/physics" element={<PhysicsResourcesPage/>} />
         <Route path="/mathematics" element={<MathsResourcesPage/>} />
+        <Route path="/ANMnotes" element={<Notes />} /> 
       </Routes>
     </Router>
   );
