@@ -1,165 +1,212 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ChevronDown, FileText } from 'lucide-react';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, ChevronRight, FileText,Grid2x2 , SquareSigma , DraftingCompass , Radical , Slash , TriangleRight ,SquareFunction ,FileQuestion } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-const AccordionItem = ({ title, content, isOpen, onClick, pdfPath }) => {
+const ResourceCard = ({ title, content, pdfPath, icon: Icon, index }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <div 
-      className="group transition-all duration-300"
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="group relative"
     >
-      <button
-        className="w-full flex justify-between items-center p-6 transition-all duration-300 
-                   hover:bg-blue-50/50 rounded-xl"
-        onClick={onClick}
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10 
+                     rounded-2xl transition-all duration-500 group-hover:from-purple-600/20 
+                     group-hover:to-blue-600/20 blur-xl" />
+      
+      <motion.div
+        className="relative overflow-hidden bg-white/30 backdrop-blur-md rounded-2xl
+                   border border-white/20 shadow-lg transition-all duration-500
+                   hover:shadow-2xl hover:bg-white/40"
       >
-        <div className="flex items-center space-x-4">
-          <div className={`w-2 h-2 rounded-full transition-all duration-300 ${
-            isOpen ? 'bg-[#6f2cf5] scale-150' : 'bg-gray-300 group-hover:bg-[#bd9dfe]'
-          }`}/>
-          <span className={`font-semibold text-lg transition-colors duration-300 ${
-            isOpen ? 'text-[#6f2cf5]' : 'text-gray-700 group-hover:text-[#6f2cf5]'
-          }`}>{title}</span>
-        </div>
-        <ChevronDown 
-          className={`h-5 w-5 transition-all duration-500 ${
-            isOpen ? 'transform rotate-180 text-[#6f2cf5]' : 'text-gray-400 group-hover:text-[#6f2cf5]'
-          }`}
-        />
-      </button>
-      <div
-        className={`overflow-hidden transition-all duration-500 ease-in-out ${
-          isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-        }`}
-      >
-        <div className={`px-12 py-6 text-gray-600 transform transition-all duration-300 ${
-          isOpen ? 'translate-y-0' : '-translate-y-4'
-        }`}>
-          <p className="leading-relaxed text-lg">{content}</p>
-          {pdfPath && (
-            <a 
-              href={pdfPath}
-              className="inline-flex items-center mt-4 text-[#6f2cf5] hover:text-[#6f2cf5] transition-colors duration-300"
-              target="_blank"
-              rel="noopener noreferrer"
+        <div className="relative p-6">
+          <div className="flex items-start gap-6">
+            {/* Animated icon container */}
+            <motion.div
+              animate={{ 
+                y: isHovered ? -5 : 0,
+                scale: isHovered ? 1.05 : 1
+              }}
+              transition={{ duration: 0.3 }}
+              className="flex-shrink-0 p-4 bg-gradient-to-br from-purple-500 to-blue-500 
+                         rounded-xl text-white shadow-lg"
             >
-              <FileText className="h-5 w-5 mr-2" />
-              View PDF Document
-            </a>
-          )}
+              <Icon className="w-6 h-6" />
+            </motion.div>
+            
+            <div className="flex-1 space-y-3">
+              {/* Animated title */}
+              <motion.h3 
+                animate={{ x: isHovered ? 5 : 0 }}
+                transition={{ duration: 0.3 }}
+                className="text-xl font-semibold bg-gradient-to-r from-purple-600 to-blue-600 
+                           bg-clip-text text-transparent"
+              >
+                {title}
+              </motion.h3>
+
+              {/* Animated content */}
+              <motion.p 
+                animate={{ y: isHovered ? -5 : 0 }}
+                transition={{ duration: 0.3 }}
+                className="text-gray-600"
+              >
+                {content}
+              </motion.p>
+
+              {/* PDF Link with hover effect */}
+              {pdfPath && (
+                <motion.a
+                  href={pdfPath}
+                  className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 
+                             group/link mt-4"
+                  whileHover={{ x: 5 }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>View PDF</span>
+                  <ChevronRight className="w-4 h-4 transition-transform 
+                                         group-hover/link:translate-x-1" />
+                </motion.a>
+              )}
+            </div>
+          </div>
+
+          {/* Progress indicator */}
+          <motion.div 
+            className="absolute bottom-0 left-0 right-0 h-[2px]"
+            initial={{ scaleX: 0 }}
+            animate={{ 
+              scaleX: isHovered ? 1 : 0,
+              background: isHovered 
+                ? "linear-gradient(to right, #9333ea, #3b82f6)" 
+                : "linear-gradient(to right, #9333ea, #9333ea)"
+            }}
+            transition={{ duration: 0.3 }}
+          />
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
-const MathsResourcesPage = () => {
-  const [openItem, setOpenItem] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const navigate = useNavigate(); // Add this hook for navigation
+const ChemistryResourcesPage = () => {
+  const [scrollProgress, setScrollProgress] = useState(0);
 
+  // Handle scroll progress
   React.useEffect(() => {
-    setIsLoaded(true);
-  }, []);
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const currentProgress = window.scrollY;
+      setScrollProgress(currentProgress / totalScroll);
+    };
 
-  const handleBackClick = () => {
-    navigate('/'); // Navigate to home page
-  };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const resources = [
     {
       title: "Logarithm",
-      pdfPath: "pdf_resources/maths/logarithm.pdf"
+      pdfPath: "pdf_resources/maths/logarithm.pdf",
+      content: "Learn about the logarithmic functions and their properties",
+      icon: Radical 
     },
     {
       title: "Matrix and Determinants",
-      pdfPath: "pdf_resources/maths/matrix.pdf"
+      pdfPath: "pdf_resources/maths/matrix.pdf",
+      content: "Understand the basics of matrices and determinants",
+      icon: Grid2x2 
     },
     {
       title: "Partial Fraction",
-      pdfPath: "pdf_resources/maths/paritalfraction.pdf"
+      pdfPath: "pdf_resources/maths/paritalfraction.pdf",
+      content: "Learn how to decompose complex fractions into simpler ones",
+      icon: Slash 
     },
     {
       title: "Coordinate Geometry",
-      pdfPath: "pdf_resources/maths/coordinate_geometry.pdf"
+      pdfPath: "pdf_resources/maths/coordinate_geometry.pdf",
+      content: "Understand the basics of coordinate geometry",
+      icon: DraftingCompass 
     },
     {
       title: "Trigonometry",
-      pdfPath: "pdf_resources/maths/trignometry.pdf"
+      pdfPath: "pdf_resources/maths/trignometry.pdf",
+      content: "Learn about the trigonometric functions and their properties",
+      icon: TriangleRight 
     },
     {
       title: "Statistics",
-      pdfPath: "pdf_resources/maths/statistics.pdf"
+      pdfPath: "pdf_resources/maths/statistics.pdf",
+      content: "Understand the basics of statistics and probability",
+      icon: SquareSigma 
     },
     {
       title: "Application of Derivatives",
-      pdfPath: "pdf_resources/maths/derivative.pdf"
+      pdfPath: "pdf_resources/maths/derivative.pdf",
+      content: "Learn how to apply derivatives in real-life scenarios",
+      icon: SquareFunction 
     },
     {
       title: "Previous Year Questions",
-      pdfPath: "pdf_resources/maths/pdf24_merged.pdf"
+      pdfPath: "pdf_resources/maths/pdf24_merged.pdf",
+      content: "Solve previous year questions to get a better understanding of the concepts",
+      icon: FileQuestion 
     }
   ];
 
-  const handleItemClick = (index) => {
-    setOpenItem(openItem === index ? null : index);
-  };
-
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-blue-50 to-white p-6 transition-opacity duration-500 ${
-      isLoaded ? 'opacity-100' : 'opacity-0'
-    }`}>
-      <div className="max-w-4xl mx-auto">
-        {/* Back button with onClick handler */}
-        <button 
-          onClick={handleBackClick}
-          className="flex items-center text-gray-600 hover:text-[#6f2cf5] mb-8
-            transition-all duration-300 transform hover:-translate-x-1 
-            hover:scale-105 active:scale-95 group"
-        >
-          <ArrowLeft className="h-5 w-5 mr-2 transition-transform duration-300 group-hover:-translate-x-1" />
-          <span className="text-lg">Back</span>
-        </button>
-          
-        {/* Heading */}
-        <div className={`mb-12 transition-all duration-500 transform
-          ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-          <h1 className="text-4xl font-bold text-[#6f2cf5] mb-2">
-            Basic Mathematics <span className="inline-flex items-center">Resources
-              <DotLottieReact
-                src="https://lottie.host/77d01ebf-c5ad-4546-b261-c40275c80e9a/JQVCakyvp8.lottie"
-                loop
-                autoplay
-                height={150}
-                width={100}
-                className="ml-2 -mt-2"
-              />
-            </span>
-          </h1>
-          <p className="text-lg text-gray-600">
-            Explore fundamental mathematics concepts and theories
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+      {/* Progress bar */}
+      <motion.div 
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-blue-500 
+                   origin-left z-50"
+        style={{ scaleX: scrollProgress }}
+      />
 
-        {/* Custom Accordion */}
-        <div className={`bg-white/70 backdrop-blur-sm rounded-2xl divide-y divide-gray-100 
-          transition-all duration-500 transform shadow-lg
-          hover:shadow-xl hover:bg-white/80`}>
+      <div className="max-w-5xl mx-auto p-8">
+        <motion.button 
+          onClick={() => window.history.back()}
+          className="flex items-center text-gray-600 hover:text-purple-600 mb-12 
+                     transition-colors duration-300"
+          whileHover={{ x: -5 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          <span className="text-lg">Back</span>
+        </motion.button>
+
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-16 text-center relative"
+        >
+          {/* Decorative background element */}
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-32 
+                           bg-gradient-to-r from-purple-200/20 via-blue-200/20 to-purple-200/20 
+                           blur-2xl" />
+          </div>
+
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 
+                         bg-clip-text text-transparent mb-4 py-2 leading-relaxed">
+            Basic Maths
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Explore the fundamentals of chemistry through our carefully curated resources
+          </p>
+        </motion.div>
+
+        <div className="space-y-6">
           {resources.map((resource, index) => (
-            <div
-              key={index}
-              className={`transition-all duration-500 transform
-                ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
-              style={{ transitionDelay: `${index * 150}ms` }}
-            >
-              <AccordionItem
-                title={resource.title}
-                content={resource.content}
-                isOpen={openItem === index}
-                onClick={() => handleItemClick(index)}
-                pdfPath={resource.pdfPath}
-              />
-            </div>
+            <ResourceCard key={index} {...resource} index={index} />
           ))}
         </div>
       </div>
@@ -167,4 +214,4 @@ const MathsResourcesPage = () => {
   );
 };
 
-export default MathsResourcesPage;
+export default ChemistryResourcesPage;
