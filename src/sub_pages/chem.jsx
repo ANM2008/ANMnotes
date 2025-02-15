@@ -124,7 +124,7 @@ const ChemistryResourcesPage = () => {
     },
     {
       title: "Engineering Materials and Catalysis",
-      content: "Coming soon",
+      pdfPath: "pdf_resources/chemistry/Basic Science 6.pdf",
       icon: Thermometer
     }
   ];
